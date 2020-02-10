@@ -42,6 +42,9 @@ public class CharacterController : MonoBehaviour {
 
         Vector2 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
         rb.MovePosition(transform.position + new Vector3(inputVector.x * spd, 0, inputVector.y * spd));
+        if (inputVector.magnitude > .1) {
+            transform.LookAt(transform.position + new Vector3(inputVector.x, 0, inputVector.y));
+        }
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded) rb.velocity += Vector3.up * JumpForce;
         
