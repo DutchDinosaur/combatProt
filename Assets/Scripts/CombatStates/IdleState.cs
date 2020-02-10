@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class BeginState : State
-{
-    public BeginState(PlayerCombat system) : base(system)
-    {
+public class BeginState : State {
+    public BeginState(PlayerCombat system) : base(system) {
     }
 
     public override IEnumerator Start()  {
