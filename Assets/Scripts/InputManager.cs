@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 
 public class InputManager : MonoBehaviour{
-    public static InputManager input;
+    public static InputManager instance;
     
     public Vector2 LeftStick;
     public Vector2 RightStick;
 
     void Awake() {
-        if (input != null)
-            GameObject.Destroy(input);
+        if (instance != null)
+            GameObject.Destroy(instance);
         else
-            input = this;
+            instance = this;
     }
 
     private void Update() {
-        
+        LeftStick = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        RightStick = new Vector2(Input.GetAxis("Horizontal2"), Input.GetAxis("Vertical2"));
     }
 }
