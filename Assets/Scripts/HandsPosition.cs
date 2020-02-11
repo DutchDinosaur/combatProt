@@ -16,9 +16,9 @@ public class HandsPosition : MonoBehaviour {
             float angle = GetVector2Angle(rightStick);
             relativePos = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), 0, Mathf.Sin(angle * Mathf.Deg2Rad)).normalized * distance + Vector3.up * handsHeight;
         }
-
         hands.LookAt(transform.position + Vector3.up * handsHeight);
         hands.position = relativePos + transform.position;
+        transform.LookAt(hands.position + Vector3.down * handsHeight);
     }
 
     float GetVector2Angle(Vector2 vector) {
