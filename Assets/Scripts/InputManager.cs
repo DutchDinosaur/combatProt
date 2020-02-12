@@ -22,7 +22,7 @@ public class InputManager : MonoBehaviour{
     }
 
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Keypad2)) switchInput();
+        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2)) switchInput();
         if (Controller) {
             walkVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             AimVector = new Vector2(Input.GetAxis("Horizontal2"), Input.GetAxis("Vertical2"));
@@ -30,7 +30,7 @@ public class InputManager : MonoBehaviour{
             hold = Input.GetAxis("hold");
             lower = Input.GetButton("lower") ? 1 : 0;
             jump = Input.GetButton("jump");
-            if (Input.GetButtonDown("escape") || Input.GetKeyDown(KeyCode.Keypad1)) SceneManager.LoadScene(0);
+            if (Input.GetButtonDown("escape") || Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) SceneManager.LoadScene(0);
         }
         else {
             walkVector = new Vector2((Input.GetKey(KeyCode.D) ? 1 : 0) - (Input.GetKey(KeyCode.A) ? 1 : 0), (Input.GetKey(KeyCode.W) ? 1 : 0) - (Input.GetKey(KeyCode.S) ? 1 : 0));
@@ -40,7 +40,7 @@ public class InputManager : MonoBehaviour{
             hold = (Input.GetKey(KeyCode.E) || Input.GetMouseButton(0)) ? 1 : 0;
             lower = (Input.GetKey(KeyCode.Q) || Input.GetMouseButton(1)) ? 1 : 0;
             jump = Input.GetKey(KeyCode.Space);
-            if (Input.GetKeyDown(KeyCode.Keypad1)) SceneManager.LoadScene(0);
+            if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) SceneManager.LoadScene(0);
         }
     }
 

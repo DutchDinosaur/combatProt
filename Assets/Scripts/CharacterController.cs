@@ -40,6 +40,7 @@ public class CharacterController : MonoBehaviour {
 
         if (InputManager.instance.hold > 0) {
             Vector3 force = new Vector3(InputManager.instance.AimVector.x, (1 - InputManager.instance.AimVector.magnitude) * holdHeightMultiplier + 1, InputManager.instance.AimVector.y) * holdMultiplier;
+            Debug.Log(force);
             swordRB.AddForce(force);
             rb.AddForce(-force);
         }
