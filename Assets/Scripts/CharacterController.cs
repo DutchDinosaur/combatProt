@@ -11,6 +11,7 @@ public class CharacterController : MonoBehaviour {
     [SerializeField] float torqueMultip;
 
     [SerializeField] float holdMultiplier;
+    [SerializeField] float holdHeightMultiplier;
     [SerializeField] float lowerMultiplier;
     [SerializeField] Rigidbody swordRB;
 
@@ -30,18 +31,25 @@ public class CharacterController : MonoBehaviour {
     private void Update() {
         spd = speed;
         if (InputManager.instance.Sprint) spd *= RunMultip;
-        rb.MovePosition(transform.position + new Vector3(InputManager.instance.LeftStick.x * spd, 0, InputManager.instance.LeftStick.y * spd));
+        //rb.MovePosition(transform.position + new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd));
+        rb.AddForce(new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd));
 
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded) rb.velocity += Vector3.up * JumpForce;
+        if (InputManager.instance.jump && IsGrounded) rb.velocity += Vector3.up * JumpForce;
         
-        if (transform.position.y < -10) transform.position = Vector3.up * 2;
+        if (transform.position.y < -10) transform.position = Vector3.up * 6;
 
-        if (InputManager.instance.hold > 0) swordRB.AddForce(-Physics.gravity * InputManager.instance.hold * holdMultiplier);
+        if (InputManager.instance.hold > 0) {
+            Vector3 force = new Vector3(InputManager.instance.AimVector.x, (1 - InputManager.instance.AimVector.magnitude) * holdHeightMultiplier + 1, InputManager.instance.AimVector.y) * holdMultiplier;
+            swordRB.AddForce(force);
+            rb.AddForce(-force);
+        }
+
+        //if (InputManager.instance.hold > 0) swordRB.AddForce(-Physics.gravity * InputManager.instance.hold * holdMultiplier);
         if (InputManager.instance.lower > 0) swordRB.AddForce(Physics.gravity * InputManager.instance.lower * lowerMultiplier);
     }
 
     private void FixedUpdate() {
-        desiredAngle = (InputManager.instance.RightStick.magnitude > .4f) ? GetVector2Angle(InputManager.instance.RightStick) : desiredAngle;
+        desiredAngle = (InputManager.instance.AimVector.magnitude > .4f) ? GetVector2Angle(InputManager.instance.AimVector) : desiredAngle;
         float angle = transform.rotation.eulerAngles.y;
 
         rb.AddTorque(Vector3.up * AngleOffset(angle, desiredAngle) * torqueMultip);
@@ -56,7 +64,7 @@ public class CharacterController : MonoBehaviour {
     }
 
     float GetVector2Angle(Vector2 vector) {
-        return Mathf.Atan2(vector.x, vector.y) * -Mathf.Rad2Deg + 180;
+        return Mathf.Atan2(vector.x, vector.y) * Mathf.Rad2Deg;
     }
 
     private float AngleOffset(float firstAngle, float secondAngle) {
