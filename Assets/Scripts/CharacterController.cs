@@ -8,47 +8,43 @@ public class CharacterController : MonoBehaviour {
     [SerializeField] float RunMultip = 1.5f;
     [SerializeField] float JumpForce = 50;
 
+    [SerializeField] float torqueMultip;
+
+    [SerializeField] float holdMultiplier;
+    [SerializeField] float lowerMultiplier;
+    [SerializeField] Rigidbody swordRB;
+
     Rigidbody rb;
-    //Animator aninimator;
-    //SpriteRenderer spriteRenderer;
 
     float spd;
-    float tempX;
 
     bool IsGrounded;
 
+    Vector3 handsRelativePos;
+    float desiredAngle;
+
     private void Start() {
         rb = GetComponent<Rigidbody>();
-        //aninimator = GetComponent<Animator>();
-        //spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update() {
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
-        {
-            //aninimator.SetBool("Walking", true);
-            //if (Input.GetAxis("Horizontal") < 0) spriteRenderer.flipX = true;
-            //else spriteRenderer.flipX = false;
-        }
-        //else aninimator.SetBool("Walking", false);
-
         spd = speed;
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
-            spd *= RunMultip;
-            //aninimator.SetBool("Running", true);
-        }
-        //else aninimator.SetBool("Running", false);
-        
-
-        Vector2 inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
-        rb.MovePosition(transform.position + new Vector3(inputVector.x * spd, 0, inputVector.y * spd));
-        if (inputVector.magnitude > .1) {
-            transform.LookAt(transform.position + new Vector3(inputVector.x, 0, inputVector.y));
-        }
+        if (InputManager.instance.Sprint) spd *= RunMultip;
+        rb.MovePosition(transform.position + new Vector3(InputManager.instance.LeftStick.x * spd, 0, InputManager.instance.LeftStick.y * spd));
 
         if (Input.GetKeyDown(KeyCode.Space) && IsGrounded) rb.velocity += Vector3.up * JumpForce;
         
         if (transform.position.y < -10) transform.position = Vector3.up * 2;
+
+        if (InputManager.instance.hold > 0) swordRB.AddForce(-Physics.gravity * InputManager.instance.hold * holdMultiplier);
+        if (InputManager.instance.lower > 0) swordRB.AddForce(Physics.gravity * InputManager.instance.lower * lowerMultiplier);
+    }
+
+    private void FixedUpdate() {
+        desiredAngle = (InputManager.instance.RightStick.magnitude > .4f) ? GetVector2Angle(InputManager.instance.RightStick) : desiredAngle;
+        float angle = transform.rotation.eulerAngles.y;
+
+        rb.AddTorque(Vector3.up * AngleOffset(angle, desiredAngle) * torqueMultip);
     }
 
     void OnCollisionEnter(Collision Collision) {
@@ -57,5 +53,16 @@ public class CharacterController : MonoBehaviour {
 
     void OnCollisionExit(Collision Collision) {
         if (Collision.gameObject.tag == "Jumpable") IsGrounded = false;
+    }
+
+    float GetVector2Angle(Vector2 vector) {
+        return Mathf.Atan2(vector.x, vector.y) * -Mathf.Rad2Deg + 180;
+    }
+
+    private float AngleOffset(float firstAngle, float secondAngle) {
+        float difference = secondAngle - firstAngle;
+        while (difference < -180) difference += 360;
+        while (difference > 180) difference -= 360;
+        return difference;
     }
 }
