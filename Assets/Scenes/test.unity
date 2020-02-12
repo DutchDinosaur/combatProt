@@ -574,6 +574,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42683f2c170e3654a8c8bbd4b8efd760, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Controller: 0
   LeftStick: {x: 0, y: 0}
   RightStick: {x: 0, y: 0}
   Sprint: 0
@@ -812,7 +813,7 @@ MonoBehaviour:
   RunMultip: 2
   JumpForce: 5
   torqueMultip: 1
-  holdMultiplier: 0.5
+  holdMultiplier: 100
   lowerMultiplier: 5
   swordRB: {fileID: 6820193846723608188}
 --- !u!54 &1938413834
