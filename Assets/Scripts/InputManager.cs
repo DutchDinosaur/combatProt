@@ -34,7 +34,7 @@ public class InputManager : MonoBehaviour{
         }
         else {
             walkVector = new Vector2((Input.GetKey(KeyCode.D) ? 1 : 0) - (Input.GetKey(KeyCode.A) ? 1 : 0), (Input.GetKey(KeyCode.W) ? 1 : 0) - (Input.GetKey(KeyCode.S) ? 1 : 0));
-            Vector2 aim = new Vector2((Input.mousePosition.x / Screen.width * 2 - 1), Input.mousePosition.y / Screen.height * 2 - 1) * AimPortion;
+            Vector2 aim = new Vector2((Input.mousePosition.x / Screen.width * 2 - 1) * (Screen.width/ Screen.height), Input.mousePosition.y / Screen.height * 2 - 1) * AimPortion;
             AimVector = (aim.magnitude < 1) ? aim : aim.normalized;
             Sprint = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
             hold = (Input.GetKey(KeyCode.E) || Input.GetMouseButton(0)) ? 1 : 0;

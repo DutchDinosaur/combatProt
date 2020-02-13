@@ -4,14 +4,15 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterController : MonoBehaviour {
-    [SerializeField] float speed = 5;
-    [SerializeField] float RunMultip = 1.5f;
-    [SerializeField] float JumpForce = 50;
-
+    [SerializeField] float speed;
+    [SerializeField] float RunMultip;
+    [SerializeField] float JumpForce;
+    [SerializeField] float JumpFallForce;
     [SerializeField] float torqueMultip;
 
     [SerializeField] float holdMultiplier;
     [SerializeField] float holdHeightMultiplier;
+    [SerializeField] float holdHeightOffset;
     [SerializeField] float lowerMultiplier;
     [SerializeField] Rigidbody swordRB;
 
@@ -29,30 +30,34 @@ public class CharacterController : MonoBehaviour {
     }
 
     private void Update() {
+        //moovement
         spd = speed;
         if (InputManager.instance.Sprint) spd *= RunMultip;
-        //rb.MovePosition(transform.position + new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd));
-        rb.AddForce(new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd));
+        rb.AddForce(new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd) * Time.deltaTime);
 
-        if (InputManager.instance.jump && IsGrounded) rb.velocity += Vector3.up * JumpForce;
-        
+        //jump
+        if (InputManager.instance.jump && IsGrounded) rb.AddForce(Vector3.up * JumpForce);
+        if (rb.velocity.y > 0 && !InputManager.instance.jump) rb.AddForce(Vector3.down * JumpFallForce);
+
+        //out of bounds
         if (transform.position.y < -10) transform.position = Vector3.up * 6;
 
+        //sword hold
         if (InputManager.instance.hold > 0) {
-            Vector3 force = new Vector3(InputManager.instance.AimVector.x, (1 - InputManager.instance.AimVector.magnitude) * holdHeightMultiplier + 1, InputManager.instance.AimVector.y) * holdMultiplier;
+            Vector3 force = new Vector3(InputManager.instance.AimVector.x, (1 - InputManager.instance.AimVector.magnitude) * holdHeightMultiplier + holdHeightOffset, InputManager.instance.AimVector.y) * holdMultiplier * Time.deltaTime;
             Debug.Log(force);
             swordRB.AddForce(force);
             rb.AddForce(-force);
         }
-
-        //if (InputManager.instance.hold > 0) swordRB.AddForce(-Physics.gravity * InputManager.instance.hold * holdMultiplier);
-        if (InputManager.instance.lower > 0) swordRB.AddForce(Physics.gravity * InputManager.instance.lower * lowerMultiplier);
+        
+        //sword slam
+        if (InputManager.instance.lower > 0) swordRB.AddForce(Physics.gravity * InputManager.instance.lower * lowerMultiplier * Time.deltaTime);
     }
 
     private void FixedUpdate() {
+        //rotate
         desiredAngle = (InputManager.instance.AimVector.magnitude > .4f) ? GetVector2Angle(InputManager.instance.AimVector) : desiredAngle;
         float angle = transform.rotation.eulerAngles.y;
-
         rb.AddTorque(Vector3.up * AngleOffset(angle, desiredAngle) * torqueMultip);
     }
 

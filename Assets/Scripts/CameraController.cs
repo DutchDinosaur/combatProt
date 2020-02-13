@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour {
     Vector3 CamPosOffset;
     Vector3 camVelocity;
     public float smoothTime;
+    public float lookHeight;
 
     private void Start() {
         CamPosOffset = transform.position;
@@ -19,6 +20,6 @@ public class CameraController : MonoBehaviour {
         Vector3 smoothedPosition = Vector3.SmoothDamp(transform.position, desiredPos, ref camVelocity, smoothTime);
         transform.position = smoothedPosition;
 
-        transform.LookAt(trackpos.position);
+        transform.LookAt(trackpos.position + Vector3.up * lookHeight);
     }
 }
