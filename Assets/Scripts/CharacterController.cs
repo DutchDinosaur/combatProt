@@ -14,7 +14,7 @@ public class CharacterController : MonoBehaviour {
     [SerializeField] float holdHeightMultiplier;
     [SerializeField] float holdHeightOffset;
     [SerializeField] float lowerMultiplier;
-    [SerializeField] Rigidbody swordRB;
+    public Rigidbody swordRB;
 
     Rigidbody rb;
 
@@ -42,15 +42,18 @@ public class CharacterController : MonoBehaviour {
         //out of bounds
         if (transform.position.y < -10) transform.position = Vector3.up * 6;
 
-        //sword hold
+        if (swordRB != null) sword();
+    }
+
+    void sword() {
+        //hold
         if (InputManager.instance.hold > 0) {
             Vector3 force = new Vector3(InputManager.instance.AimVector.x, (1 - InputManager.instance.AimVector.magnitude) * holdHeightMultiplier + holdHeightOffset, InputManager.instance.AimVector.y) * holdMultiplier * Time.deltaTime;
-            Debug.Log(force);
             swordRB.AddForce(force);
             rb.AddForce(-force);
         }
-        
-        //sword slam
+
+        //slam
         if (InputManager.instance.lower > 0) swordRB.AddForce(Physics.gravity * InputManager.instance.lower * lowerMultiplier * Time.deltaTime);
     }
 

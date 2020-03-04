@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Jumpable
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -14,10 +15,10 @@ TagManager:
   - UI
   - 
   - 
-  - weapons
-  - player
-  - postProssesing
   - 
+  - 
+  - postProssesing
+  - grab
   - 
   - 
   - 
