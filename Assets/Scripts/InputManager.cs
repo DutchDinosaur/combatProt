@@ -39,7 +39,7 @@ public class InputManager : MonoBehaviour{
         }
 
         if (Controller) {
-            walkVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            walkVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
             AimVector = new Vector2(Input.GetAxis("Horizontal2"), Input.GetAxis("Vertical2"));
             Sprint = Input.GetButton("sprint");
             hold = Input.GetAxis("hold");
@@ -48,7 +48,7 @@ public class InputManager : MonoBehaviour{
             if (Input.GetButtonDown("escape") || Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) SceneManager.LoadScene(0);
         }
         else {
-            walkVector = new Vector2((Input.GetKey(KeyCode.D) ? 1 : 0) - (Input.GetKey(KeyCode.A) ? 1 : 0), (Input.GetKey(KeyCode.W) ? 1 : 0) - (Input.GetKey(KeyCode.S) ? 1 : 0));
+            walkVector = new Vector2((Input.GetKey(KeyCode.D) ? 1 : 0) - (Input.GetKey(KeyCode.A) ? 1 : 0), (Input.GetKey(KeyCode.W) ? 1 : 0) - (Input.GetKey(KeyCode.S) ? 1 : 0)).normalized;
             Vector2 aim = new Vector2((Input.mousePosition.x / Screen.width * 2 - 1) * (Screen.width/ Screen.height), Input.mousePosition.y / Screen.height * 2 - 1) * AimPortion;
             AimVector = (aim.magnitude < 1) ? aim : aim.normalized;
             Sprint = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);

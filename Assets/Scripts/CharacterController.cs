@@ -6,8 +6,8 @@ using UnityEngine;
 public class CharacterController : MonoBehaviour {
     [SerializeField] float speed;
     [SerializeField] float RunMultip;
-    [SerializeField] float JumpForce;
-    [SerializeField] float JumpFallForce;
+    //[SerializeField] float JumpForce;
+    //[SerializeField] float JumpFallForce;
     [SerializeField] float torqueMultip;
 
     [SerializeField] float holdMultiplier;
@@ -33,11 +33,11 @@ public class CharacterController : MonoBehaviour {
         //moovement
         spd = speed;
         if (InputManager.instance.Sprint) spd *= RunMultip;
-        rb.AddForce(new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd) * Time.deltaTime);
+        rb.AddForce(new Vector3(InputManager.instance.walkVector.x * spd, 0, InputManager.instance.walkVector.y * spd) * Time.deltaTime, ForceMode.Impulse);
 
         //jump
-        if (InputManager.instance.jump && IsGrounded) rb.AddForce(Vector3.up * JumpForce);
-        if (rb.velocity.y > 0 && !InputManager.instance.jump) rb.AddForce(Vector3.down * JumpFallForce);
+        //if (InputManager.instance.jump && IsGrounded) rb.AddForce(Vector3.up * JumpForce);
+        //if (rb.velocity.y > 0 && !InputManager.instance.jump) rb.AddForce(Vector3.down * JumpFallForce);
 
         //out of bounds
         if (transform.position.y < -10) transform.position = Vector3.up * 6;
